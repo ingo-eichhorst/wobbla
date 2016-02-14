@@ -1,0 +1,68 @@
+<!doctype html>
+<html ng-app="cloudApp">
+  <head>
+
+    <!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-resource.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Load AngularJS scripts -->
+    <script src="controller.js"></script>
+
+  </head>
+  <body ng-controller="CloudController" style="margin:10px">
+    <h1>Wobbla TV Cloud</h1>
+    <nav>
+      <div class="well">
+        <div class="btn-group" role="group" aria-label="...">
+          <button class="btn btn-default" ng-click="nav='top';mode='desc'">Top 50</button>
+          <button class="btn btn-default" ng-click="nav='cloud';mode='static'">Simple Cloud</button>
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Channel
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a href ng-click="selectedChannel = ''">All</a></li>
+              <li ng-repeat="channel in channels"><a href ng-click="selectChannel('/'+$index)">{{channel.name}}</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div ng-show="nav=='top'">
+      <h2>Top 50</h2>
+      <div class="well">
+        <table class="table table-striped">
+          <thead>
+            <th>#</th>
+            <th>Text</th>
+            <th>Rating</th>
+          </thead>
+          <tbody>
+            <tr ng-repeat="entry in cloud">
+              <td>{{$index+1}}</td>
+              <td>{{entry.text}}</td>
+              <td>{{entry.size}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div ng-show="nav=='cloud'">
+      <h2>Simple Cloud</h2>
+      <div class="well">
+        <span ng-repeat="entry in cloud">
+          <span ng-style="{'font-size':entry.size+'px'}">{{entry.text}}</span>
+        </span>
+      </div>
+    </div>
+  </body>
+</html>

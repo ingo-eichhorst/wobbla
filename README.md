@@ -31,11 +31,11 @@ The configuration is made in *./config/config.js*
 
 ###### Channel Configuration
 
-This defines the channels/subtitle files. Two example srt-files are included to help you get started.
+This defines the channels/subtitle files. 4 example srt-files are included to help you get started.
 
 <pre>[
   {
-    name: "Frau TV (WDR)",  // containing the Name of the current airing 
+    name: "Frau TV (WDR)",  // Name of the current airing 
     chName: "WDR", // channel Name
     subPath: "./subs/frautv2.srt", // path to the subtitle file (only *.srt will work)
     url: "/videos/frautv.mp4" // url to a related video file - the vid-folder (./vid/some.mp4) is used to statically deliver files as "/video/some.mp4" download

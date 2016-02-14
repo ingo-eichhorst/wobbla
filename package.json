@@ -1,0 +1,16 @@
+{
+  "name": "Wobbla",
+  "version": "0.2.0",
+  "description": "The TVHackday2015 team Wobbla's app to build a word cloud of subtitle files",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ingo Eichhorst",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.13.3",
+    "express-ws": "^1.0.0-rc.1",
+    "subtitles-parser": "0.0.2"
+  }
+}
