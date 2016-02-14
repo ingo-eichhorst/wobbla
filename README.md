@@ -74,6 +74,21 @@ The cloud contains a list of words with it's size(ranking) and all the channels 
 
 <pre> GET /cloud/:id?mode=static </pre>
 
+## Issues
+
+The performance could surely be improved by:
+- processing only the changing delta not the whole data
+- maybe processing in child processes can helb to seperate the cpu intense part from the app (router, ...)
+- most of the thinks run syncronously --> asynchronous would work better
+- a change in the arrangement of the processing steps would help too.
+- maybe its even better to process the subtitles on server request and not from the client.
+
+Other improvments:
+- Bullshit Lists in different languages would allow other than German content
+- the overall error handling is not very good
+- The variable namings are not very concrete
+- Retarting the app when the last subtitle is over would also be nice.
+
 ## License
 
 MIT
