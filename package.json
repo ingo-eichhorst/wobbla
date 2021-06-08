@@ -10,7 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.13.3",
-    "express-ws": "^1.0.0-rc.1",
+    "express-ws": "^5.0.1",
     "subtitles-parser": "0.0.2"
   }
 }
