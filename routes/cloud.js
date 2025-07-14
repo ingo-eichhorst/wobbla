@@ -1,41 +1,47 @@
 'use strict';
 
-module.exports = function(app) {
+module.exports = (app) => {
+  const config = require('../config/config.js');
+  const buildCloud = require('../lib/build_cloud.js');
 
-  var config = require('../config/config.js');
-  var buildCloud = require('../lib/build_cloud.js');
-
-  var respondCloud = function (req, res, curChannels) {
-    var startReq = new Date().getTime();
-    var outputMode = req.query.mode || 'desc';
-    buildCloud(curChannels, config.offset, outputMode, function(err, cloud){
-      if (err) res.status(400).json({error:{message:err}});
+  const respondCloud = (req, res, curChannels) => {
+    const startReq = new Date().getTime();
+    const outputMode = req.query.mode || 'desc';
+    
+    buildCloud(curChannels, config.offset, outputMode, (err, cloud) => {
+      if (err) {
+        console.error('Error building cloud:', err);
+        return res.status(400).json({ error: { message: err } });
+      }
       
       // print stream position and time the request took
-      var currTime = new Date().getTime();
+      const currTime = new Date().getTime();
       console.log('[Subtitle Request]');
-      console.log('Run-Time: ' + ((currTime - config.startTime)/1000) + ' sec.');
+      console.log('Run-Time: ' + ((currTime - config.startTime) / 1000) + ' sec.');
       console.log('Request took: ' + (currTime - startReq) + ' ms');
       
       res.json(cloud);
     });
-  }
+  };
 
-  app.get('/cloud', function (req, res) {
-    var curChannels = config.channels;
+  app.get('/cloud', (req, res) => {
+    const curChannels = config.channels;
     respondCloud(req, res, curChannels);
   });
 
-
-  app.get('/cloud/:id', function (req, res) {
-    var curChannels = [];
-    // set channels of interest array to only the one requested channel id
-    curChannels.push(config.channels[req.params.id]);
-    respondCloud(req, res, curChannels);
+  app.get('/cloud/:id', (req, res) => {
+    const curChannels = [];
+    const channelId = parseInt(req.params.id);
+    
+    if (channelId >= 0 && channelId < config.channels.length) {
+      curChannels.push(config.channels[channelId]);
+      respondCloud(req, res, curChannels);
+    } else {
+      res.status(404).json({ error: { message: 'Channel not found' } });
+    }
   });
 
-  app.get('/channels', function (req, res) {
+  app.get('/channels', (req, res) => {
     res.json(config.channels);
   });
-
-}
+};
