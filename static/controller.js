@@ -1,45 +1,47 @@
 angular.module('cloudApp', ['ngResource'])
   .controller('CloudController', function($scope, $http, $interval) {
     
-    /* Get Cloud Entries
-    var Cloud = $resource('localhost:3333/cloud');
-    var cloud = Cloud.get(function() {
-      console.log('got cloud data');
-    });
-    // GET the single title over API
-    // As a top list or fixed position with changing word size
-    */
-    $scope.nav='top';
+    $scope.nav = 'top';
     $scope.mode = 'desc';
-
     $scope.selectedChannel = '';
     $scope.channels = [];
+    $scope.cloud = [];
 
-    $scope.getChannels = function(){
-      $http.get('http://localhost:4242/channels')
-      .success(function(channelResp) {
-        $scope.channels = channelResp;
-      });
+    $scope.getChannels = function() {
+      $http.get('/channels')
+        .then(function(response) {
+          $scope.channels = response.data;
+        }, function(error) {
+          console.error('Error fetching channels:', error);
+        });
     };
-    $scope.getChannels();
 
-    $scope.selectChannel = function(string){
-      $scope.selectedChannel = string;
+    $scope.selectChannel = function(channelPath) {
+      $scope.selectedChannel = channelPath;
       $scope.getCloud();
     };
 
-    $scope.cloud = [];
-    $scope.getCloud = function(){
-      $http.get('http://localhost:4242/cloud' + $scope.selectedChannel + '?mode=' + $scope.mode)
-      .success(function(cloudResp) {
-        $scope.cloud = cloudResp;
-        console.log($scope.cloud);
-        console.log('success' + cloudResp);
-      });
+    $scope.getCloud = function() {
+      $http.get('/cloud' + $scope.selectedChannel + '?mode=' + $scope.mode)
+        .then(function(response) {
+          $scope.cloud = response.data;
+          console.log('Cloud data updated:', $scope.cloud);
+        }, function(error) {
+          console.error('Error fetching cloud data:', error);
+        });
     };
+
+    // Initialize the application
+    $scope.getChannels();
     $scope.getCloud();
 
+    // Set up periodic cloud updates
     $scope.permanentCloudCall = $interval($scope.getCloud, 1000);
 
-
+    // Clean up interval on scope destroy
+    $scope.$on('$destroy', function() {
+      if ($scope.permanentCloudCall) {
+        $interval.cancel($scope.permanentCloudCall);
+      }
+    });
   });
