@@ -1,6 +1,7 @@
 # wobbla
 
 [![CI](https://github.com/ingo-eichhorst/wobbla/actions/workflows/ci.yml/badge.svg)](https://github.com/ingo-eichhorst/wobbla/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/ingo-eichhorst/wobbla/branch/master/graph/badge.svg)](https://codecov.io/gh/ingo-eichhorst/wobbla)
 
 The TVHackday2015 team Wobbla's app to build a word cloud of subtitle files.
 
