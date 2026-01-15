@@ -1,0 +1,5 @@
+node_modules/
+coverage/
+vids/
+.beads/
+model.js
