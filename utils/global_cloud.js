@@ -1,10 +1,10 @@
 'use strict';
 
-/** 
- * The global cloud is used to permanently store 
+/**
+ * The global cloud is used to permanently store
  * the status of the last created cloud
  */
 
 
-var globalCloud = [];
+const globalCloud = [];
 module.exports = globalCloud;
