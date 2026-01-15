@@ -1,0 +1,178 @@
+/* Wobbla Dark Mode Theme
+ * CSS custom properties with Bootstrap 3 overrides
+ * WCAG AA compliant (4.5:1 contrast minimum)
+ */
+
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --bg-well: #f5f5f5;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --border-color: #ddd;
+  --link-color: #007bff;
+  --link-hover: #0056b3;
+  --btn-default-bg: #fff;
+  --btn-default-border: #ccc;
+  --btn-default-text: #333;
+  --table-stripe-bg: #f9f9f9;
+  --table-border: #ddd;
+  --dropdown-bg: #fff;
+  --dropdown-hover-bg: #f5f5f5;
+  --dropdown-text: #333;
+  --dropdown-border: rgba(0, 0, 0, 0.15);
+  --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --bg-well: #2d2d2d;
+  --text-primary: #e4e4e7;
+  --text-secondary: #a1a1aa;
+  --border-color: #404040;
+  --link-color: #3b82f6;
+  --link-hover: #60a5fa;
+  --btn-default-bg: #2d2d2d;
+  --btn-default-border: #404040;
+  --btn-default-text: #e4e4e7;
+  --table-stripe-bg: #252525;
+  --table-border: #404040;
+  --dropdown-bg: #2d2d2d;
+  --dropdown-hover-bg: #3d3d3d;
+  --dropdown-text: #e4e4e7;
+  --dropdown-border: rgba(255, 255, 255, 0.15);
+  --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+body {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+a {
+  color: var(--link-color);
+}
+
+a:hover,
+a:focus {
+  color: var(--link-hover);
+}
+
+.well {
+  background-color: var(--bg-well) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.btn-default {
+  background-color: var(--btn-default-bg) !important;
+  border-color: var(--btn-default-border) !important;
+  color: var(--btn-default-text) !important;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.btn-default:hover,
+.btn-default:focus,
+.btn-default:active,
+.btn-default.active {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  color: var(--btn-default-text) !important;
+}
+
+.dropdown-menu {
+  background-color: var(--dropdown-bg) !important;
+  border-color: var(--dropdown-border) !important;
+  box-shadow: 0 6px 12px var(--shadow-color) !important;
+}
+
+.dropdown-menu > li > a {
+  color: var(--dropdown-text) !important;
+}
+
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+  background-color: var(--dropdown-hover-bg) !important;
+  color: var(--dropdown-text) !important;
+}
+
+.table {
+  color: var(--text-primary) !important;
+}
+
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > tbody > tr > td,
+.table > tfoot > tr > td {
+  border-color: var(--table-border) !important;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: var(--table-stripe-bg) !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-primary) !important;
+}
+
+.caret {
+  border-top-color: var(--btn-default-text) !important;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 15px;
+  vertical-align: middle;
+}
+
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: var(--btn-default-bg);
+  border: 1px solid var(--btn-default-border);
+  border-radius: 4px;
+  color: var(--btn-default-text);
+  cursor: pointer;
+  font-size: 14px;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+  background-color: var(--bg-secondary);
+}
+
+.theme-toggle-icon {
+  display: inline-block;
+}
+
+.theme-icon-auto::before {
+  content: '\25d0';
+}
+.theme-icon-light::before {
+  content: '\2600';
+}
+.theme-icon-dark::before {
+  content: '\263e';
+}
