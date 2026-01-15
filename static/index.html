@@ -1,9 +1,84 @@
 <!doctype html>
 <html ng-app="cloudApp">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wobbla TV Cloud - Modern Word Visualization</title>
+
     <!-- AngularJS -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-resource.js"></script>
+
+    <!-- Modern Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* Modern styling for word cloud */
+      body {
+        font-family:
+          'Inter',
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          sans-serif;
+        background: #f8fafc;
+      }
+
+      h1,
+      h2 {
+        font-weight: 700;
+        color: #1e293b;
+      }
+
+      #modern-word-cloud {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        border-radius: 12px;
+        box-shadow:
+          0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+      }
+
+      #modern-word-cloud svg {
+        border-radius: 12px;
+      }
+
+      .btn-primary {
+        background-color: #3b82f6;
+        border-color: #3b82f6;
+        font-weight: 600;
+      }
+
+      .btn-primary:hover {
+        background-color: #2563eb;
+        border-color: #2563eb;
+      }
+
+      .well {
+        border-radius: 8px;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+      }
+
+      /* Loading animation */
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      .loading {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+    </style>
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
@@ -21,7 +96,12 @@
       crossorigin="anonymous"
     />
 
+    <!-- D3.js and d3-cloud -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-cloud@1.2.7/build/d3.layout.cloud.min.js"></script>
+
     <!-- Load AngularJS scripts -->
+    <script src="wordcloud.js"></script>
     <script src="controller.js"></script>
   </head>
   <body ng-controller="CloudController" style="margin: 10px">
@@ -31,6 +111,7 @@
         <div class="btn-group" role="group" aria-label="...">
           <button class="btn btn-default" ng-click="nav='top';mode='desc'">Top 50</button>
           <button class="btn btn-default" ng-click="nav='cloud';mode='static'">Simple Cloud</button>
+          <button class="btn btn-primary" ng-click="nav='modern';mode='static'">Modern Cloud</button>
           <div class="btn-group" role="group">
             <button
               type="button"
@@ -75,6 +156,12 @@
         <span ng-repeat="entry in cloud">
           <span ng-style="{'font-size':entry.size+'px'}">{{entry.text}}</span>
         </span>
+      </div>
+    </div>
+    <div ng-show="nav=='modern'">
+      <h2>Modern Cloud</h2>
+      <div class="well" style="padding: 20px; background: #f8fafc">
+        <div id="modern-word-cloud" style="width: 100%; height: 600px"></div>
       </div>
     </div>
   </body>
