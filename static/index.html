@@ -1,6 +1,23 @@
 <!doctype html>
 <html ng-app="cloudApp">
   <head>
+    <script>
+      (function () {
+        var k = 'wobbla-theme-preference',
+          p = 'auto';
+        try {
+          p = localStorage.getItem(k) || 'auto';
+        } catch (e) {}
+        var t =
+          p === 'dark' || p === 'light'
+            ? p
+            : window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light';
+        if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+      })();
+    </script>
+
     <!-- AngularJS -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-resource.js"></script>
@@ -21,8 +38,12 @@
       crossorigin="anonymous"
     />
 
+    <!-- Theme -->
+    <link rel="stylesheet" href="theme.css" />
+
     <!-- Load AngularJS scripts -->
     <script src="controller.js"></script>
+    <script src="theme.js"></script>
   </head>
   <body ng-controller="CloudController" style="margin: 10px">
     <h1>Wobbla TV Cloud</h1>
@@ -44,9 +65,22 @@
             </button>
             <ul class="dropdown-menu">
               <li><a href ng-click="selectedChannel = ''">All</a></li>
-              <li ng-repeat="channel in channels"><a href ng-click="selectChannel('/'+$index)">{{channel.name}}</a></li>
+              <li ng-repeat="channel in channels">
+                <a href ng-click="selectChannel('/'+$index)">{{channel.name}}</a>
+              </li>
             </ul>
           </div>
+        </div>
+        <div class="theme-toggle">
+          <button
+            class="theme-toggle-btn"
+            ng-click="toggleTheme()"
+            title="Toggle theme ({{themePreference}})"
+            aria-label="Toggle theme, currently {{themePreference}}"
+          >
+            <span class="theme-toggle-icon" ng-class="getThemeIconClass()"></span>
+            <span>{{getThemeLabel()}}</span>
+          </button>
         </div>
       </div>
     </nav>

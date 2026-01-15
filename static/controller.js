@@ -1,12 +1,4 @@
 angular.module('cloudApp', ['ngResource']).controller('CloudController', function ($scope, $http, $interval) {
-  /* Get Cloud Entries
-    var Cloud = $resource('localhost:3333/cloud');
-    var cloud = Cloud.get(function() {
-      console.log('got cloud data');
-    });
-    // GET the single title over API
-    // As a top list or fixed position with changing word size
-    */
   $scope.nav = 'top';
   $scope.mode = 'desc';
 
@@ -29,11 +21,33 @@ angular.module('cloudApp', ['ngResource']).controller('CloudController', functio
   $scope.getCloud = function () {
     $http.get(`http://localhost:4242/cloud${$scope.selectedChannel}?mode=${$scope.mode}`).success(function (cloudResp) {
       $scope.cloud = cloudResp;
-      console.log($scope.cloud);
-      console.log(`success${cloudResp}`);
     });
   };
   $scope.getCloud();
 
   $scope.permanentCloudCall = $interval($scope.getCloud, 1000);
+
+  $scope.themePreference = window.WobblaTheme ? window.WobblaTheme.getStoredPreference() : 'auto';
+  $scope.effectiveTheme = window.WobblaTheme ? window.WobblaTheme.getEffectiveTheme($scope.themePreference) : 'light';
+  window.wobblaThemeScope = $scope;
+
+  $scope.toggleTheme = function () {
+    if (!window.WobblaTheme) return;
+    $scope.themePreference = window.WobblaTheme.getNextTheme($scope.themePreference);
+    $scope.effectiveTheme = window.WobblaTheme.getEffectiveTheme($scope.themePreference);
+    window.WobblaTheme.storePreference($scope.themePreference);
+    window.WobblaTheme.applyTheme($scope.effectiveTheme);
+  };
+
+  $scope.getThemeLabel = function () {
+    return window.WobblaTheme ? window.WobblaTheme.getThemeLabel($scope.themePreference) : 'Auto';
+  };
+
+  $scope.getThemeIconClass = function () {
+    return window.WobblaTheme ? window.WobblaTheme.getThemeIconClass($scope.themePreference) : 'theme-icon-auto';
+  };
+
+  $scope.$on('$destroy', function () {
+    window.wobblaThemeScope = null;
+  });
 });
