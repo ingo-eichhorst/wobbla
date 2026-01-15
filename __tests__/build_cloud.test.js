@@ -6,34 +6,34 @@ jest.mock('../config/config.js', () => {
     wordMinOccurrence: 2,
     cloudMaxEntries: 50,
     offset: 5,
-    startTime: new Date().getTime() - 60000 // Start 1 minute ago
+    startTime: new Date().getTime() - 60000, // Start 1 minute ago
   };
 });
 
 describe('buildCloud function', () => {
   const mockChannels = [
     {
-      name: "Test Channel",
-      chName: "TEST",
-      url: "",
+      name: 'Test Channel',
+      chName: 'TEST',
+      url: '',
       subObj: [
         {
           startTime: 0,
           endTime: 2000,
-          text: "Hello world"
+          text: 'Hello world',
         },
         {
           startTime: 2000,
           endTime: 4000,
-          text: "Hello again"
+          text: 'Hello again',
         },
         {
           startTime: 10000,
           endTime: 12000,
-          text: "Test word test"
-        }
-      ]
-    }
+          text: 'Test word test',
+        },
+      ],
+    },
   ];
 
   it('should build a cloud array with word counts', (done) => {
@@ -67,7 +67,7 @@ describe('buildCloud function', () => {
   });
 
   it('should return error for invalid mode', (done) => {
-    buildCloud(mockChannels, 5, 'invalid', (err, cloud) => {
+    buildCloud(mockChannels, 5, 'invalid', (err) => {
       expect(err).toBe('undefined output mode');
       done();
     });
@@ -77,7 +77,7 @@ describe('buildCloud function', () => {
     buildCloud(mockChannels, 5, 'desc', (err, cloud) => {
       expect(err).toBeNull();
       // All words in cloud should meet minimum occurrence
-      cloud.forEach(word => {
+      cloud.forEach((word) => {
         expect(word.size).toBeGreaterThanOrEqual(2);
       });
       done();
