@@ -56,6 +56,39 @@ class ModernWordCloud {
   }
 
   /**
+   * Simple hash function to generate a seed from a string
+   * @param {string} str - String to hash
+   * @returns {number} - Hash value
+   */
+  // eslint-disable-next-line class-methods-use-this
+  hashString(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      // Simple hash algorithm (djb2)
+      hash = hash * 33 + char;
+      // Keep it bounded
+      hash %= 2147483647;
+    }
+    return Math.abs(hash);
+  }
+
+  /**
+   * Create a seeded random number generator
+   * @param {number} seed - Seed value
+   * @returns {function} - Random function
+   */
+  // eslint-disable-next-line class-methods-use-this
+  seededRandom(seed) {
+    let s = seed;
+    return function () {
+      // Linear congruential generator
+      s = (s * 9301 + 49297) % 233280;
+      return s / 233280;
+    };
+  }
+
+  /**
    * Update the word cloud with new data
    * @param {Array} words - Array of word objects with {text, size, channels}
    */
@@ -72,54 +105,36 @@ class ModernWordCloud {
     this.colorScale.domain([minSize, maxSize]);
     this.fontWeightScale.domain([minSize, maxSize]);
 
-    // Prepare words with position stability
-    const cloudWords = words.map((word) => {
-      const wordData = {
-        text: word.text,
-        size: this.sizeScale(word.size),
-        originalSize: word.size,
-        channels: word.channels,
-        weight: this.fontWeightScale(word.size),
-        color: this.colorScale(word.size),
-      };
+    // Prepare words for layout
+    const cloudWords = words.map((word, index) => ({
+      text: word.text,
+      size: this.sizeScale(word.size),
+      originalSize: word.size,
+      channels: word.channels,
+      weight: this.fontWeightScale(word.size),
+      color: this.colorScale(word.size),
+      index, // Store index for deterministic seeding
+    }));
 
-      // Reuse previous position if word exists (position stability)
-      const previousWord = this.previousWords.get(word.text);
-      if (previousWord) {
-        wordData.x = previousWord.x;
-        wordData.y = previousWord.y;
-        wordData.hasPosition = true;
-      }
+    // Create a deterministic seed based on the word set
+    // This ensures consistent layouts for the same set of words
+    const wordSetKey = cloudWords.map((w) => w.text).join('|');
+    const seed = this.hashString(wordSetKey);
 
-      return wordData;
-    });
+    // Create word cloud layout with deterministic random function
+    // This provides both collision detection AND position stability
+    const layout = d3.layout
+      .cloud()
+      .size([this.width, this.height])
+      .words(cloudWords)
+      .padding(8) // Increased padding to prevent overlaps
+      .rotate(() => 0) // Keep all words horizontal for readability
+      .font(this.fontFamily)
+      .fontSize((d) => d.size)
+      .random(this.seededRandom(seed)) // Deterministic placement
+      .on('end', (layoutWords) => this.draw(layoutWords));
 
-    // Separate words into those with positions and those needing layout
-    const wordsWithPositions = cloudWords.filter((w) => w.hasPosition);
-    const wordsNeedingLayout = cloudWords.filter((w) => !w.hasPosition);
-
-    // If we have words that need positioning, run layout only for them
-    if (wordsNeedingLayout.length > 0) {
-      // Create word cloud layout for new words only
-      const layout = d3.layout
-        .cloud()
-        .size([this.width, this.height])
-        .words(wordsNeedingLayout)
-        .padding(6)
-        .rotate(() => 0)
-        .font(this.fontFamily)
-        .fontSize((d) => d.size)
-        .on('end', (layoutWords) => {
-          // Merge positioned words with newly laid out words
-          const allWords = [...wordsWithPositions, ...layoutWords];
-          this.draw(allWords);
-        });
-
-      layout.start();
-    } else {
-      // All words have positions, just update them
-      this.draw(wordsWithPositions);
-    }
+    layout.start();
   }
 
   /**
