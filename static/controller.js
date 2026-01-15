@@ -9,7 +9,7 @@ angular.module('cloudApp', ['ngResource']).controller('CloudController', functio
     // As a top list or fixed position with changing word size
     */
   $scope.nav = 'modern';
-  $scope.mode = 'desc';
+  $scope.mode = 'static'; // Use static mode for position stability
 
   // Initialize modern word cloud (will be created when the view is shown)
   let modernWordCloud = null;

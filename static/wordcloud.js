@@ -72,28 +72,54 @@ class ModernWordCloud {
     this.colorScale.domain([minSize, maxSize]);
     this.fontWeightScale.domain([minSize, maxSize]);
 
-    // Prepare words for d3-cloud layout
-    const cloudWords = words.map((word) => ({
-      text: word.text,
-      size: this.sizeScale(word.size),
-      originalSize: word.size,
-      channels: word.channels,
-      weight: this.fontWeightScale(word.size),
-      color: this.colorScale(word.size),
-    }));
+    // Prepare words with position stability
+    const cloudWords = words.map((word) => {
+      const wordData = {
+        text: word.text,
+        size: this.sizeScale(word.size),
+        originalSize: word.size,
+        channels: word.channels,
+        weight: this.fontWeightScale(word.size),
+        color: this.colorScale(word.size),
+      };
 
-    // Create word cloud layout
-    const layout = d3.layout
-      .cloud()
-      .size([this.width, this.height])
-      .words(cloudWords)
-      .padding(6)
-      .rotate(() => 0) // Keep all words horizontal for readability
-      .font(this.fontFamily)
-      .fontSize((d) => d.size)
-      .on('end', (layoutWords) => this.draw(layoutWords));
+      // Reuse previous position if word exists (position stability)
+      const previousWord = this.previousWords.get(word.text);
+      if (previousWord) {
+        wordData.x = previousWord.x;
+        wordData.y = previousWord.y;
+        wordData.hasPosition = true;
+      }
 
-    layout.start();
+      return wordData;
+    });
+
+    // Separate words into those with positions and those needing layout
+    const wordsWithPositions = cloudWords.filter((w) => w.hasPosition);
+    const wordsNeedingLayout = cloudWords.filter((w) => !w.hasPosition);
+
+    // If we have words that need positioning, run layout only for them
+    if (wordsNeedingLayout.length > 0) {
+      // Create word cloud layout for new words only
+      const layout = d3.layout
+        .cloud()
+        .size([this.width, this.height])
+        .words(wordsNeedingLayout)
+        .padding(6)
+        .rotate(() => 0)
+        .font(this.fontFamily)
+        .fontSize((d) => d.size)
+        .on('end', (layoutWords) => {
+          // Merge positioned words with newly laid out words
+          const allWords = [...wordsWithPositions, ...layoutWords];
+          this.draw(allWords);
+        });
+
+      layout.start();
+    } else {
+      // All words have positions, just update them
+      this.draw(wordsWithPositions);
+    }
   }
 
   /**
